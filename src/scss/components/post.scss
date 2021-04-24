@@ -1,0 +1,55 @@
+.post {
+    max-width: 350px;
+    background: #fff;
+    box-shadow: 2px 2px 10px #ccc;
+    padding: 20px;
+    display: flex;
+    flex-flow: column wrap;
+    margin-bottom: 20px;
+
+    &__header {
+        margin-bottom: 25px;
+
+        &--text {
+            font-size: 22px;
+        }
+    }
+
+    &__description {
+        margin-bottom: 25px;
+
+        &--text {
+            font-size: 16px;
+            line-height: 25px;
+        }
+    }
+
+    &__author {
+        p {
+            color: rgb(161, 161, 161);
+        }
+    }
+}
+
+@media screen and (max-width: 1250px) {
+    .post {
+        flex-basis: 20%;
+    }
+
+    .wrap {
+        padding: 0 10px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .post {
+        max-width: 450px;
+        flex-basis: 26%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .post {
+        flex-basis: auto;
+    }
+}

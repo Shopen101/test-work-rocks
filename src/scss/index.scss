@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+@import './reset';
+@import './variables';
+@import './mixin';
+@import './core';
+
+@import './components/findBtn.scss';
+@import './components/findInput.scss';
+@import './components/post.scss';
+@import './components/loader.scss';
+
+@import './pages/postFrame.scss';

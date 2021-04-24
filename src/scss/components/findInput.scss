@@ -1,0 +1,14 @@
+.find__input {
+    background: #fff;
+    border: 1px solid rgb(182, 182, 182);
+    border-radius: 0 7px 7px 0;
+    width: 500px;
+    padding: 0 6px;
+}
+
+
+@media screen and (max-width: 700px) {
+    .find__input {
+        width: 300px;
+    }
+}
