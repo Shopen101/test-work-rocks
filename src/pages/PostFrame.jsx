@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { FindButton, FindInput, Post } from '../components'
+import { CircLoader, FindButton, FindInput, Post, Resetbtn } from '../components'
+
+import { useSnackbar } from 'notistack'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { setPostsWithName } from '../redux/action'
@@ -7,6 +9,8 @@ import { setPostsWithName } from '../redux/action'
 const arrOfPosts = []
 
 function PostFrame() {
+    const { enqueueSnackbar } = useSnackbar()
+
     const dispatch = useDispatch()
     const [userFindText, setUserFindText] = useState('')
     const [postsWithOutSort, setPostsWithoutSort] = useState([])
@@ -14,8 +18,8 @@ function PostFrame() {
     const { posts, users, correctPosts } = useSelector(state => state.all)
 
     useEffect(() => {
-        posts?.forEach(post => {
-            users?.forEach(user => {
+        posts.forEach(post => {
+            users.forEach(user => {
                 if (post.userId === user.id) {
                     let postWithUsername = {
                         ...post,
@@ -37,14 +41,14 @@ function PostFrame() {
 
     const handleFindClick = () => {
         if (!userFindText) {
-            alert('Вы не ввели ничего в окно поиска!')
+            enqueueSnackbar('Для поиска необходимо ввести текст!', { variant: 'error' })
         } else {
             if (userFindText.split(' ').length > 1) {
                 let userTxt = userFindText.split(' ')
 
+                let sortedArrOfPost = []
                 userTxt.forEach(userWord => {
                     const regexp = new RegExp(userWord.trim(), 'gmiu')
-                    let sortedArrOfPost = []
 
                     postsWithOutSort.forEach(post => {
                         post.firstName.split(' ').forEach(name => name.match(regexp) && sortedArrOfPost.push(post))
@@ -52,8 +56,14 @@ function PostFrame() {
                     })
 
                     sortedArrOfPost = Array.from(new Set(sortedArrOfPost))
-                    sortedArrOfPost.length ? dispatch(setPostsWithName(sortedArrOfPost)) : alert('По вашему запросу ничего не было найдено!')
                 })
+
+                if (sortedArrOfPost.length) {
+                    dispatch(setPostsWithName(sortedArrOfPost))
+                    enqueueSnackbar('Поиск дал результат!', { variant: 'success' })
+                } else {
+                    enqueueSnackbar('Ничего не найдено по вашему запросу!', { variant: 'warning' })
+                }
             } else {
                 const regexp = new RegExp(userFindText.trim(), 'gmiu')
                 let sortedArrOfPost = []
@@ -64,8 +74,37 @@ function PostFrame() {
                 })
 
                 sortedArrOfPost = Array.from(new Set(sortedArrOfPost))
-                sortedArrOfPost.length ? dispatch(setPostsWithName(sortedArrOfPost)) : alert('По вашему запросу ничего не было найдено!')
+                if (sortedArrOfPost.length) {
+                    dispatch(setPostsWithName(sortedArrOfPost))
+                    enqueueSnackbar('Поиск дал результат!', { variant: 'success' })
+                } else {
+                    enqueueSnackbar('Ничего не найдено по вашему запросу!', { variant: 'warning' })
+                }
             }
+        }
+    }
+
+    const handleResetButtonClick = () => {
+        posts.forEach(post => {
+            users.forEach(user => {
+                if (post.userId === user.id) {
+                    let postWithUsername = {
+                        ...post,
+                        firstName: user.name,
+                        lastName: user.username,
+                    }
+                    arrOfPosts.push(postWithUsername)
+                }
+            })
+        })
+
+        dispatch(setPostsWithName(arrOfPosts))
+        setUserFindText('')
+    }
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleFindClick()
         }
     }
 
@@ -73,14 +112,17 @@ function PostFrame() {
         <div className="container">
             <div className="wrap">
                 <div className="find__block">
-                    <FindButton onClick={handleFindClick} />
-                    <FindInput onChange={changeHandler} userFindText={userFindText} />
+                    <div className="find__block--btns">
+                        <FindButton onClick={handleFindClick} />
+                        <FindInput onChange={changeHandler} userFindText={userFindText} onKeyPress={handleKeyPress} />
+                    </div>
+                    <Resetbtn onClick={handleResetButtonClick} />
                 </div>
                 <div className="posts__block">
                     {
                         correctPosts.length
                             ?
-                            correctPosts?.map((post, index) => {
+                            correctPosts.map((post, index) => {
                                 return (
                                     <Post
                                         firstName={post.firstName}
@@ -91,7 +133,7 @@ function PostFrame() {
                                     />
                                 )
                             })
-                            : <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+                            : <CircLoader />
                     }
                 </div>
             </div>

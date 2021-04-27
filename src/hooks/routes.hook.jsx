@@ -7,7 +7,7 @@ export const useRoutes = () => {
         <Switch>
             <Route path="/" exact component={PostFrame} />
             <Route path="/error" exact component={ErrorPage} />
-            <Redirect to="/error" />
+            <Redirect to="/" />
         </Switch>
     )
 }

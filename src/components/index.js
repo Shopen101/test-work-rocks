@@ -1,3 +1,5 @@
 export { default as Post } from './Post'
 export { default as FindInput } from './FindInput'
 export { default as FindButton } from './FindButton'
+export { default as CircLoader } from './CircLoader'
+export { default as Resetbtn } from './Resetbtn'

@@ -33,9 +33,8 @@
 
 @media screen and (max-width: 1250px) {
     .post {
-        flex-basis: 20%;
+        max-width: 260px;
     }
-
     .wrap {
         padding: 0 10px;
     }
